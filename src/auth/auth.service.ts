@@ -8,7 +8,10 @@ export class AuthService {
     async registerUser(body: any) {
         console.log("service body", body);
         const hashedPassword = await bcrypt.hash(body.password, 10);
-        const result = this.userService.createUser({...body, password: hashedPassword});
+        const result = await this.userService.createUser({
+          ...body,
+          password: hashedPassword,
+        });
         return result;
     }
 }
