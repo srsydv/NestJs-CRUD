@@ -11,7 +11,8 @@ export class UserService {
         return await this.userModel.create(userData);
     } catch (error) {
         console.log("error", error);
-        if(error.code === 11000) {
+        const DUPLICATE_ERROR_CODE = 11000;
+        if(error.code === DUPLICATE_ERROR_CODE) {
             throw new ConflictException("User already exists");
         }
         throw error;
