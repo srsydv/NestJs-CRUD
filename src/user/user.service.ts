@@ -1,14 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel('User') private userModel: Model<any>) {}
 
-  async createUser(userData: Partial<User>) {
-    const user = new this.userModel(userData);
-    return user.save();
+  async createUser(userData: any) {
+    try {
+        return await this.userModel.create(userData);
+    } catch (error) {
+        console.log("error", error);
+        if(error.code === 11000) {
+            throw new ConflictException("User already exists");
+        }
+        throw error;
+    }
+    
   }
 }
